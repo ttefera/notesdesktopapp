@@ -31,30 +31,31 @@ class NotesApp(QMainWindow):
         # save button
         self.save_btn = QPushButton("Save")
         self.save_btn.setIcon(QIcon("save_icon.png"))
-        self.save_btn.setFixedSize(100, 40)
+        self.save_btn.setFixedSize(40, 40)
         self.save_btn.clicked.connect(self.save_text)
 
         # open file button
         self.open_btn = QPushButton("Open")
         self.open_btn.setIcon(QIcon("open_icon.png"))
-        self.open_btn.setFixedSize(100, 40)
+        self.open_btn.setFixedSize(40, 40)
         self.open_btn.clicked.connect(self.open_text)
 
         # insert image button
         self.img_btn = QPushButton("Image")
         self.img_btn.setIcon(QIcon("img_icon.png"))
-        self.img_btn.setFixedSize(100, 40)
+        self.img_btn.setFixedSize(40, 40)
         # TODO: implement insert_image function
         # self.save_btn.clicked.connect(self.insert_image)
 
         # insert image button
         self.style_btn = QPushButton("Style")
         self.style_btn.setIcon(QIcon("style_icon.png"))
-        self.style_btn.setFixedSize(100, 40)
+        self.style_btn.setFixedSize(40, 40)
         # TODO: implement style function
         # self.save_btn.clicked.connect(self.style)
 
         left_column = QVBoxLayout()
+        left_column.addStretch()
         left_column.addWidget(self.save_btn)
         left_column.addStretch()
         left_column.addWidget(self.open_btn)
