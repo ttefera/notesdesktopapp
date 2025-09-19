@@ -1,10 +1,11 @@
+import os
 import sys
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow,
     QPushButton, QWidget, QHBoxLayout, QVBoxLayout, QFileDialog
 )
 from PyQt6.QtGui import QIcon, QPalette, QBrush, QPixmap
-
+from PyQt6.QtCore import QSize
 from RichTextEdit import RichTextEdit
 
 class NotesApp(QMainWindow):
@@ -27,30 +28,18 @@ class NotesApp(QMainWindow):
         self.text_area = RichTextEdit()
         self.text_area.setAcceptRichText(True)
 
-        # --- Left column (buttons) ---
-        # save button
-        self.save_btn = QPushButton("Save")
-        self.save_btn.setIcon(QIcon("save_icon.png"))
-        self.save_btn.setFixedSize(40, 40)
-        self.save_btn.clicked.connect(self.save_text)
+        # --- Main layout: left column + text editor ---
+        layout = QHBoxLayout(central)
+        layout.addLayout(self.build_left_column())  # left buttons
+        layout.addWidget(self.text_area, 1) # right editor expands
 
-        # open file button
-        self.open_btn = QPushButton("Open")
-        self.open_btn.setIcon(QIcon("open_icon.png"))
-        self.open_btn.setFixedSize(40, 40)
-        self.open_btn.clicked.connect(self.open_text)
-
-        # insert image button
-        self.img_btn = QPushButton("Image")
-        self.img_btn.setIcon(QIcon("img_icon.png"))
-        self.img_btn.setFixedSize(40, 40)
+    def build_left_column(self)->QVBoxLayout:
+        self.save_btn = self.create_button("save_icon.png", self.save_text)
+        self.open_btn = self.create_button("open_icon.png",self.open_text)
+        self.img_btn = self.create_button("img_icon.png")
         # TODO: implement insert_image function
         # self.save_btn.clicked.connect(self.insert_image)
-
-        # insert image button
-        self.style_btn = QPushButton("Style")
-        self.style_btn.setIcon(QIcon("style_icon.png"))
-        self.style_btn.setFixedSize(40, 40)
+        self.style_btn = self.create_button("style_icon.png")
         # TODO: implement style function
         # self.save_btn.clicked.connect(self.style)
 
@@ -64,11 +53,22 @@ class NotesApp(QMainWindow):
         left_column.addStretch()
         left_column.addWidget(self.style_btn)
         left_column.addStretch() 
+        return left_column
 
-        # --- Main layout: left column + text editor ---
-        layout = QHBoxLayout(central)
-        layout.addLayout(left_column)          # left buttons
-        layout.addWidget(self.text_area, 1)    # right editor expands
+    def create_button(self, icon_name, callback=None) -> QPushButton:
+        # Absolute path (avoids relative issues)
+        icon_path = os.path.join(os.path.dirname(__file__), "assets", icon_name)
+        print("Loading icon from:", icon_path, "Exists?", os.path.exists(icon_path))
+
+        # create button
+        btn = QPushButton()
+        btn.setIcon(QIcon(icon_path))
+        btn.setFixedSize(40, 40)
+        
+        btn.setIconSize(QSize(40, 40))  # scale icon to fit button
+        if callback is not None:
+            btn.clicked.connect(callback)
+        return btn
 
     def save_text(self):
         with open("note.html", "w", encoding="utf-8") as f:
